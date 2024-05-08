@@ -8,7 +8,10 @@ import core.sys.posix.unistd;
 
 import std.algorithm;
 import std.experimental.logger;
-
+import std.array;
+import std.string;
+import gtk.Clipboard;
+import gdk.Display;
 import gdk.Event;
 import gdk.RGBA;
 
@@ -196,6 +199,24 @@ public:
 		vte_terminal_set_scroll_unit_is_pixels(vteTerminal, enable);
 	}
 
+	public void copy() {
+		char* t = vte_terminal_get_text_selected(vteTerminal, VteFormat.TEXT);
+		string text = Str.toString(t);
+
+		// Strip trailing whitespace in each line
+		string[] lines = text.split("\n");
+		foreach(i, line; lines) {
+			lines[i] = line.stripRight();
+		}
+		text = lines.join("\n");
+		int textlen = cast(int)text.length;
+
+		auto display = Display.getDefault();
+		auto clipboard = Clipboard.getDefault(display);
+
+		clipboard.setText(text, textlen);
+	}
+
 static if (COMPILE_VTE_BACKGROUND_COLOR) {
     public void getColorBackgroundForDraw(RGBA background) {
 		vte_terminal_get_color_background_for_draw(vteTerminal, background is null? null: background.getRGBAStruct());
@@ -231,6 +252,8 @@ __gshared extern(C) {
 	void function(VteTerminal* terminal, int enable) c_vte_terminal_set_enable_fallback_scrolling;
 	void function(VteTerminal* terminal, int enable) c_vte_terminal_set_scroll_unit_is_pixels;
 
+	char* function(VteTerminal* terminal, VteFormat format) c_vte_terminal_get_text_selected;
+
 	static if (COMPILE_VTE_BACKGROUND_COLOR) {
 		void function(VteTerminal* terminal, GdkRGBA* color) c_vte_terminal_get_color_background_for_draw;
 	}
@@ -242,6 +265,8 @@ alias vte_terminal_set_disable_bg_draw = c_vte_terminal_set_disable_bg_draw;
 alias vte_terminal_set_enable_fallback_scrolling = c_vte_terminal_set_enable_fallback_scrolling;
 alias vte_terminal_set_scroll_unit_is_pixels = c_vte_terminal_set_scroll_unit_is_pixels;
 
+alias vte_terminal_get_text_selected = c_vte_terminal_get_text_selected;
+
 static if (COMPILE_VTE_BACKGROUND_COLOR) {
 	alias vte_terminal_get_color_background_for_draw = c_vte_terminal_get_color_background_for_draw;
 }
@@ -252,6 +277,8 @@ shared static this() {
 
 	Linker.link(vte_terminal_set_enable_fallback_scrolling, "vte_terminal_set_enable_fallback_scrolling", LIBRARY_VTE);
 	Linker.link(vte_terminal_set_scroll_unit_is_pixels, "vte_terminal_set_scroll_unit_is_pixels", LIBRARY_VTE);
+
+	Linker.link(vte_terminal_get_text_selected, "vte_terminal_get_text_selected", LIBRARY_VTE);
 
 	static if (COMPILE_VTE_BACKGROUND_COLOR) {
 		Linker.link(vte_terminal_get_color_background_for_draw, "vte_terminal_get_color_background_for_draw", LIBRARY_VTE);

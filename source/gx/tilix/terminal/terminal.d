@@ -513,7 +513,8 @@ private:
         //Clipboard actions
         saCopy = registerActionWithSettings(group, ACTION_PREFIX, ACTION_COPY, gsShortcuts, delegate(GVariant, SimpleAction) {
             if (vte.getHasSelection()) {
-                vte.copyClipboard();
+                // vte.copyClipboard();
+                vte.copy();
             }
         });
         if (checkVTEVersion(VTE_VERSION_COPY_AS_HTML)) {
@@ -1067,7 +1068,8 @@ private:
             if (vte is null) return;
 
             if (vte.getHasSelection() && gsSettings.getBoolean(SETTINGS_COPY_ON_SELECT_KEY)) {
-                vte.copyClipboard();
+                // vte.copyClipboard();
+                vte.copy();
             }
         });
 
