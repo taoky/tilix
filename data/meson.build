@@ -98,10 +98,10 @@ install_data(
 )
 
 # Copying Nautilus extension
-install_data(
-    'nautilus/open-tilix.py',
-    install_dir: datadir / 'nautilus-python' / 'extensions'
-)
+# install_data(
+#     'nautilus/open-tilix.py',
+#     install_dir: datadir / 'nautilus-python' / 'extensions'
+# )
 
 # Copy D-Bus service descriptor
 conf = configuration_data()
