@@ -2333,6 +2333,16 @@ private:
         case SETTINGS_PROFILE_SCROLL_ON_INPUT_KEY:
             vte.setScrollOnKeystroke(gsProfile.getBoolean(SETTINGS_PROFILE_SCROLL_ON_INPUT_KEY));
             break;
+        case SETTINGS_PROFILE_KINETIC_SCROLL_KEY:
+            auto kineticScroll = gsProfile.getBoolean(SETTINGS_PROFILE_KINETIC_SCROLL_KEY);
+            if (kineticScroll) {
+                vte.setEnableFallbackScrolling(false);
+                vte.setScrollUnitIsPixels(true);
+            } else {
+                vte.setEnableFallbackScrolling(true);
+                vte.setScrollUnitIsPixels(false);
+            }
+            break;
         case SETTINGS_PROFILE_UNLIMITED_SCROLL_KEY, SETTINGS_PROFILE_SCROLLBACK_LINES_KEY:
             auto scrollLines = gsProfile.getBoolean(SETTINGS_PROFILE_UNLIMITED_SCROLL_KEY) ? -1 : gsProfile.getInt(SETTINGS_PROFILE_SCROLLBACK_LINES_KEY);
             vte.setScrollbackLines(scrollLines);
@@ -2487,6 +2497,7 @@ private:
             SETTINGS_PROFILE_CURSOR_SHAPE_KEY, // Only pass one color key, all colors will be applied
             SETTINGS_PROFILE_FG_COLOR_KEY, SETTINGS_PROFILE_SHOW_SCROLLBAR_KEY, SETTINGS_PROFILE_SCROLL_ON_OUTPUT_KEY,
             SETTINGS_PROFILE_SCROLL_ON_INPUT_KEY,
+            SETTINGS_PROFILE_KINETIC_SCROLL_KEY,
             SETTINGS_PROFILE_UNLIMITED_SCROLL_KEY,
             SETTINGS_PROFILE_BACKSPACE_BINDING_KEY,
             SETTINGS_PROFILE_DELETE_BINDING_KEY,

@@ -731,6 +731,11 @@
       <summary>Whether to scroll to the bottom when a key is pressed</summary>
       <description>If true, pressing a key jumps the scrollbar to the bottom.</description>
     </key>
+    <key name="kinetic-scrolling" type="b">
+      <default>true</default>
+      <summary>Whether to enable kinetic scrolling</summary>
+      <description>If true, the terminal will continue to scroll after the mouse wheel has been released when using touchpad.</description>
+    </key>
     <key name="scroll-on-output" type="b">
       <default>false</default>
       <summary>Whether to scroll to the bottom when there's new output</summary>

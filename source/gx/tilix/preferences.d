@@ -210,6 +210,7 @@ enum SETTINGS_PROFILE_USE_BOLD_COLOR_KEY = "bold-color-set";
 enum SETTINGS_PROFILE_SHOW_SCROLLBAR_KEY = "show-scrollbar";
 enum SETTINGS_PROFILE_SCROLL_ON_OUTPUT_KEY = "scroll-on-output";
 enum SETTINGS_PROFILE_SCROLL_ON_INPUT_KEY = "scroll-on-keystroke";
+enum SETTINGS_PROFILE_KINETIC_SCROLL_KEY = "kinetic-scrolling";
 enum SETTINGS_PROFILE_UNLIMITED_SCROLL_KEY = "scrollback-unlimited";
 enum SETTINGS_PROFILE_SCROLLBACK_LINES_KEY = "scrollback-lines";
 

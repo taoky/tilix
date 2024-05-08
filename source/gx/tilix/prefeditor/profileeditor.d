@@ -1031,6 +1031,10 @@ private:
         bh.bind(SETTINGS_PROFILE_SCROLL_ON_INPUT_KEY, cbScrollOnKeystroke, "active", GSettingsBindFlags.DEFAULT);
         add(cbScrollOnKeystroke);
 
+        CheckButton cbKineticScroll = new CheckButton(_("Kinetic scrolling"));
+        bh.bind(SETTINGS_PROFILE_KINETIC_SCROLL_KEY, cbKineticScroll, "active", GSettingsBindFlags.DEFAULT);
+        add(cbKineticScroll);
+
         CheckButton cbLimitScroll = new CheckButton(_("Limit scrollback to:"));
         bh.bind(SETTINGS_PROFILE_UNLIMITED_SCROLL_KEY, cbLimitScroll, "active", GSettingsBindFlags.DEFAULT | GSettingsBindFlags.INVERT_BOOLEAN);
         SpinButton sbScrollbackSize = new SpinButton(256.0, to!double(int.max), 256.0);
