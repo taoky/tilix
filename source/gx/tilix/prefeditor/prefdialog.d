@@ -850,7 +850,11 @@ private:
      */
     void updateShortcutSetting(TreeIter iter, string shortcut) {
         if (tsShortcuts.getValueString(iter, COLUMN_SHORTCUT_TYPE) == SC_TYPE_ACTION) {
-            gsShortcuts.setString(tsShortcuts.getValueString(iter, COLUMN_ACTION_NAME), shortcut);
+            if (shortcut == SHORTCUT_DISABLED) {
+                gsShortcuts.setStrv(tsShortcuts.getValueString(iter, COLUMN_ACTION_NAME), []);
+            } else {
+                gsShortcuts.setStrv(tsShortcuts.getValueString(iter, COLUMN_ACTION_NAME), [shortcut]);
+            }
         } else {
             string uuid = tsShortcuts.getValueString(iter, COLUMN_ACTION_NAME);
             GSettings gsProfile = prfMgr.getProfileSettings(uuid);
@@ -1118,7 +1122,15 @@ private:
                 label = labels[key];
             }
 
-            appendValues(ts, currentIter, [label, acceleratorNameToLabel(gsShortcuts.getString(key)), key, SC_TYPE_ACTION]);
+            string[] shortcuts = gsShortcuts.getStrv(key);
+            string name;
+            if (shortcuts.length > 0) {
+                name = shortcuts[0];
+            } else {
+                name = SHORTCUT_DISABLED;
+            }
+
+            appendValues(ts, currentIter, [label, acceleratorNameToLabel(name), key, SC_TYPE_ACTION]);
         }
     }
 

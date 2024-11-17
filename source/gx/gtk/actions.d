@@ -20,6 +20,8 @@ import gtk.ApplicationWindow;
 
 import gx.i18n.l10n;
 
+import std.stdio;
+
 private Application app = null;
 
 enum SHORTCUT_DISABLED = N_("disabled");
@@ -71,6 +73,23 @@ string keyToDetailedActionName(string key) {
     return prefix ~ "." ~ id;
 }
 
+// Function to handle migration logic for keys still storing single strings (old format)
+void migrateToStringArrayIfNeeded(GSettings settings, string key) {
+    GVariant value = settings.getValue(key);
+
+    if (value.getType().toString() == "s") {
+        string old_value = settings.getString(key);
+        string[] new_value = [];
+        if (old_value != "disabled") {
+            new_value ~= old_value;
+        }
+        
+        settings.setStrv(key, new_value);
+
+        trace("Migrated '" ~ key ~ "' from single string to array.");
+    }
+}
+
 /**
     * Adds a new action to the specified menu. An action is automatically added to the application that invokes the
     * specified callback when the actual menu item is activated.
@@ -95,9 +114,7 @@ SimpleAction registerActionWithSettings(ActionMapIF actionMap, string prefix, st
 
     string[] shortcuts;
     try {
-        string shortcut = settings.getString(getActionKey(prefix, id));
-        if (shortcut.length > 0 && shortcut != SHORTCUT_DISABLED)
-            shortcuts = [shortcut];
+        shortcuts = settings.getStrv(getActionKey(prefix, id));
     }
     catch (Exception e) {
         //TODO - This does not work, figure out to catch GLib-GIO-ERROR

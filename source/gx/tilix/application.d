@@ -494,9 +494,10 @@ private:
         });
         gsShortcuts = new GSettings(SETTINGS_KEY_BINDINGS_ID);
         gsShortcuts.addOnChanged(delegate(string key, Settings) {
+            migrateToStringArrayIfNeeded(gsShortcuts, key);
             string actionName = keyToDetailedActionName(key);
-            //trace("Updating shortcut '" ~ actionName ~ "' to '" ~ gsShortcuts.getString(key) ~ "'");
-            setShortcut(actionName, gsShortcuts.getString(key));
+            string[] shortcuts = gsShortcuts.getStrv(key);
+            setShortcut(actionName, shortcuts);
         });
         gsGeneral = new GSettings(SETTINGS_ID);
         // Set this once globally because it affects more then current window (i.e. shortcuts)
@@ -514,14 +515,14 @@ private:
         loadProfileShortcuts();
     }
 
-    void setShortcut(string actionName, string shortcut) {
-        if (shortcut == SHORTCUT_DISABLED) {
+    void setShortcut(string actionName, string[] shortcuts) {
+        if (shortcuts.length == 0) {
             char** tmp = (new char*[1]).ptr;
             tmp[0] = cast(char*) '\0';
             gtk_application_set_accels_for_action(gtkApplication, Str.toStringz(actionName), tmp);
             trace("Removing accelerator");
         } else {
-            setAccelsForAction(actionName, [shortcut]);
+            setAccelsForAction(actionName, shortcuts);
         }
     }
 
