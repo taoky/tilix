@@ -7,7 +7,7 @@ project(
 
 compiler = meson.get_compiler('d')
 if compiler.get_id() == 'llvm'
-  d_extra_args = ['-vcolumns']
+  d_extra_args = ['-vcolumns', '-allinst']
   d_link_args = []
 elif compiler.get_id() == 'dmd'
   # Workaround for https://issues.dlang.org/show_bug.cgi?id=20668
