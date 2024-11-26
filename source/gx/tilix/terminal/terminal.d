@@ -2200,7 +2200,7 @@ private:
 
     void setBoldColor(RGBA color) {
         if (gsProfile.getBoolean(SETTINGS_PROFILE_USE_BOLD_COLOR_KEY)) {
-            vte.setColorBold(color);
+            vte.setColorBold(invertedColorIfNeeded(color));
         } else {
             vte.setColorBold(null);
         }
@@ -2233,6 +2233,13 @@ private:
         return result;
     }
 
+    RGBA invertedColorIfNeeded(RGBA color, float saturationFactor = 0.8) {
+        if (!invertWhenDark || !tilix.isDarkMode) {
+            return color;
+        }
+        return invertColor(color, saturationFactor);
+    }
+
     public void setVTEColors(bool force = false) {
         // Determine colorset needed and only set if different
         VTEColorSet desired = (isTerminalWidgetFocused() || dimPercent == 0)? VTEColorSet.normal: VTEColorSet.dim;
@@ -2242,18 +2249,12 @@ private:
 //        tracef("vteBGUsed: %f, %f, %f, %f", vteBG.red, vteBG.green, vteBG.blue, vteBG.alpha);
         if (isTerminalWidgetFocused() || dimPercent == 0) {
 //            tracef("vteFG: %f, %f, %f", vteFG.red, vteFG.green, vteFG.blue);
-            if (invert) {
-                RGBA vteFGI = invertColor(vteFG);
-                RGBA vteBGI = invertColor(vteBG);
-                vte.setColors(vteFGI, vteBGI, vtePalette);
-            } else {
-                vte.setColors(vteFG, vteBG, vtePalette);
-            }
+            vte.setColors(invertedColorIfNeeded(vteFG), invertedColorIfNeeded(vteBG), vtePalette);
             setBoldColor(vteBold);
             currentColorSet = VTEColorSet.normal;
         } else {
 //            tracef("dimFG: %f, %f, %f", dimFG.red, dimFG.green, dimFG.blue);
-            vte.setColors(dimFG, vteBG, dimPalette);
+            vte.setColors(invertedColorIfNeeded(dimFG), invertedColorIfNeeded(vteBG), dimPalette);
             setBoldColor(dimBold);
             currentColorSet = VTEColorSet.dim;
         }
@@ -2337,8 +2338,8 @@ private:
             if (gsProfile.getBoolean(SETTINGS_PROFILE_USE_HIGHLIGHT_COLOR_KEY)) {
                 vteHighlightFG.parse(gsProfile.getString(SETTINGS_PROFILE_HIGHLIGHT_FG_COLOR_KEY));
                 vteHighlightBG.parse(gsProfile.getString(SETTINGS_PROFILE_HIGHLIGHT_BG_COLOR_KEY));
-                vte.setColorHighlightForeground(vteHighlightFG);
-                vte.setColorHighlight(vteHighlightBG);
+                vte.setColorHighlightForeground(invertedColorIfNeeded(vteHighlightFG));
+                vte.setColorHighlight(invertedColorIfNeeded(vteHighlightBG));
             } else {
                 vte.setColorHighlightForeground(null);
                 vte.setColorHighlight(null);
@@ -2348,8 +2349,8 @@ private:
             if (gsProfile.getBoolean(SETTINGS_PROFILE_USE_CURSOR_COLOR_KEY)) {
                 vteCursorFG.parse(gsProfile.getString(SETTINGS_PROFILE_CURSOR_FG_COLOR_KEY));
                 vteCursorBG.parse(gsProfile.getString(SETTINGS_PROFILE_CURSOR_BG_COLOR_KEY));
-                vte.setColorCursorForeground(vteCursorFG);
-                vte.setColorCursor(vteCursorBG);
+                vte.setColorCursorForeground(invertedColorIfNeeded(vteCursorFG));
+                vte.setColorCursor(invertedColorIfNeeded(vteCursorBG));
             } else {
                 vte.setColorCursorForeground(null);
                 vte.setColorCursor(null);
@@ -3542,10 +3543,12 @@ private:
                 } else {
                     drawBG = vteBG;
                 }
+                RGBA drawBGI = invertedColorIfNeeded(drawBG);
                 //tracef("Draw background: %f, %f, %f, %f", vteBG.red, vteBG.green, vteBG.blue, vteBG.alpha);
-                cr.setSourceRgba(drawBG.red, drawBG.green, drawBG.blue, drawBG.alpha);
+                cr.setSourceRgba(drawBGI.red, drawBGI.green, drawBGI.blue, drawBGI.alpha);
             } else {
-                cr.setSourceRgba(vteBG.red, vteBG.green, vteBG.blue, vteBG.alpha);
+                RGBA vteBGI = invertedColorIfNeeded(vteBG);
+                cr.setSourceRgba(vteBGI.red, vteBGI.green, vteBGI.blue, vteBGI.alpha);
             }
             cr.setOperator(cairo_operator_t.SOURCE);
             cr.rectangle(0.0, 0.0, width, height);
