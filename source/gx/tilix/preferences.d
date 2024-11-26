@@ -206,6 +206,7 @@ enum SETTINGS_PROFILE_CURSOR_BG_COLOR_KEY = "cursor-background-color";
 enum SETTINGS_PROFILE_DIM_TRANSPARENCY_KEY = "dim-transparency-percent";
 enum SETTINGS_PROFILE_BOLD_COLOR_KEY = "bold-color";
 enum SETTINGS_PROFILE_USE_BOLD_COLOR_KEY = "bold-color-set";
+enum SETTINGS_PROFILE_INVERT_WHEN_DARK = "invert-when-dark";
 
 enum SETTINGS_PROFILE_SHOW_SCROLLBAR_KEY = "show-scrollbar";
 enum SETTINGS_PROFILE_SCROLL_ON_OUTPUT_KEY = "scroll-on-output";

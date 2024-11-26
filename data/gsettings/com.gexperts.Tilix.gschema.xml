@@ -617,6 +617,11 @@
       <summary>Whether bold is also bright</summary>
       <description>If true, setting bold on the first 8 colors also switches to their bright variants.</description>
     </key>
+    <key name="invert-when-dark" type="b">
+      <default>false</default>
+      <summary>Whether to invert background and foreground color in dark mode</summary>
+      <description>If true, invert profile background and foreground color when dark mode is on.</description>
+    </key>
     <key name="rewrap-on-resize" type="b">
       <default>true</default>
       <summary>Whether to rewrap the terminal contents on window resize</summary>

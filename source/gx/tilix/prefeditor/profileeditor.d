@@ -582,6 +582,10 @@ private:
             box.add(cbBoldIsBright);
         }
 
+        CheckButton cbInvertWhenDark = new CheckButton(_("Invert color in dark mode"));
+        bh.bind(SETTINGS_PROFILE_INVERT_WHEN_DARK, cbInvertWhenDark, "active", GSettingsBindFlags.DEFAULT);
+        box.add(cbInvertWhenDark);
+
         Grid gSliders = new Grid();
         gSliders.setColumnSpacing(6);
         gSliders.setRowSpacing(6);

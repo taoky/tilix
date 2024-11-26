@@ -2253,10 +2253,10 @@ private:
                 getStyleColor(vte.getStyleContext(), StateFlags.ACTIVE, vteFG);
                 getStyleBackgroundColor(vte.getStyleContext(), StateFlags.ACTIVE, vteBG);
             } else {
-            if (!vteFG.parse(gsProfile.getString(SETTINGS_PROFILE_FG_COLOR_KEY)))
-                trace("Parsing foreground color failed");
-            if (!vteBG.parse(gsProfile.getString(SETTINGS_PROFILE_BG_COLOR_KEY)))
-                trace("Parsing background color failed");
+                if (!vteFG.parse(gsProfile.getString(SETTINGS_PROFILE_FG_COLOR_KEY)))
+                    trace("Parsing foreground color failed");
+                if (!vteBG.parse(gsProfile.getString(SETTINGS_PROFILE_BG_COLOR_KEY)))
+                    trace("Parsing background color failed");
             }
             vteBG.alpha = to!double(100 - gsProfile.getInt(SETTINGS_PROFILE_BG_TRANSPARENCY_KEY)) / 100.0;
             string[] colors = gsProfile.getStrv(SETTINGS_PROFILE_PALETTE_COLOR_KEY);
