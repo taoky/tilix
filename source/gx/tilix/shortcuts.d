@@ -41,7 +41,9 @@ ShortcutsWindow getShortcutWindow() {
         ShortcutsShortcut ss = cast(ShortcutsShortcut) builder.getObject(key);
         if (ss !is null) {
             string[] accelNames = gsShortcuts.getStrv(key);
-            ss.setProperty("accelerator", accelNames[0]);
+            if (accelNames.length > 0) {
+                ss.setProperty("accelerator", accelNames[0]);
+            }
         } else {
             trace("Could not find shortcut for " ~ key);
         }
