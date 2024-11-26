@@ -798,14 +798,6 @@ private:
         }
     }
 
-    Session[] getSessions() {
-        Session[] result = new Session[](nb.getNPages());
-        for (int i = 0; i < nb.getNPages(); i++) {
-            result[i] = getSession(i);
-        }
-        return result;
-    }
-
     Session getSession(int i) {
         return cast(Session) nb.getNthPage(i);
     }
@@ -2047,6 +2039,14 @@ public:
         int scale = gsSettings.getEnum(SETTINGS_BACKGROUND_IMAGE_SCALE_KEY);
         isBGImage = renderImage(surface, widget.getAllocatedWidth(), widget.getAllocatedHeight(), mode, true, cast(cairo_filter_t) scale);
         return isBGImage;
+    }
+
+    Session[] getSessions() {
+        Session[] result = new Session[](nb.getNPages());
+        for (int i = 0; i < nb.getNPages(); i++) {
+            result[i] = getSession(i);
+        }
+        return result;
     }
 
 // Quake methods

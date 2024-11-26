@@ -1141,6 +1141,10 @@ public:
             return null;
     }
 
+    Terminal[] getTerminals() {
+        return terminals;
+    }
+
     /**
      * Called when the session becomes active,
      * i.e. is visible to the user

@@ -11,7 +11,6 @@ import std.file;
 import std.json;
 import std.path;
 import std.uuid;
-import std.math : abs;
 
 import gdk.RGBA;
 
@@ -152,32 +151,6 @@ class ColorScheme {
     override string toString() {
        return schemeToJson(this).toPrettyString();
     }
-}
-
-RGBA invertColor(RGBA color, float saturationFactor = 0.8) {
-    import std.algorithm : min, max;
-
-    RGBA result;
-    result.alpha = color.alpha;
-
-    // HSL
-    float cmax = max(max(color.red, color.green), color.blue);
-    float cmin = min(min(color.red, color.green), color.blue);
-    float delta = cmax - cmin;
-
-    float lightness = (cmax + cmin) / 2;
-    float newLightness = 1.0 - lightness;
-    float saturation = delta == 0 ? 0 : delta / (1 - abs(2 * lightness - 1)); 
-    saturation *= saturationFactor;
-
-    // Convert back to RGB
-    float adjustment = newLightness - lightness;
-
-    result.red = min(1.0, max(0.0, color.red + adjustment));
-    result.green = min(1.0, max(0.0, color.green + adjustment));
-    result.blue = min(1.0, max(0.0, color.blue + adjustment));
-
-    return result;
 }
 
 /**

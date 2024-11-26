@@ -72,6 +72,8 @@ import gx.tilix.common;
 import gx.tilix.constants;
 import gx.tilix.preferences;
 import gx.tilix.shortcuts;
+import gx.tilix.session;
+import gx.tilix.terminal.terminal;
 
 import gx.tilix.bookmark.manager;
 
@@ -123,6 +125,8 @@ private:
     bool useTabs = false;
 
     bool _processMonitor = false;
+
+    public bool isDarkMode = false;
 
     CssProvider themeCssProvider;
 
@@ -575,6 +579,21 @@ private:
                         reset = true;
                     }
                 }
+                if (darkMode != isDarkMode) {
+                    // appwindow[] -> session[] -> terminals[]
+                    for (int i = 0; i < appWindows.length; i++) {
+                        AppWindow aw = appWindows[i];
+                        Session[] sessions = aw.getSessions();
+                        for (int j = 0; j < sessions.length; j++) {
+                            Terminal[] terminals = sessions[j].getTerminals();
+                            for (int k = 0; k < terminals.length; k++) {
+                                Terminal tm = terminals[k];
+                                tm.setVTEColors(true);
+                            }
+                        }
+                    }
+                }
+                isDarkMode = darkMode;
 
                 if (reset) {
                     /*

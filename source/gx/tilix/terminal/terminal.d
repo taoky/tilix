@@ -2145,6 +2145,7 @@ private:
     RGBA vteBold;
     RGBA dimBold;
     double dimPercent;
+    bool invertWhenDark;
 
     VTEColorSet currentColorSet = VTEColorSet.normal;
 
@@ -2205,15 +2206,49 @@ private:
         }
     }
 
-    void setVTEColors(bool force = false) {
+    RGBA invertColor(RGBA color, float saturationFactor = 0.8) {
+        import std.algorithm : min, max;
+        import std.math : abs;
+
+        // HSL
+        float cmax = max(max(color.red, color.green), color.blue);
+        float cmin = min(min(color.red, color.green), color.blue);
+        float delta = cmax - cmin;
+
+        float lightness = (cmax + cmin) / 2;
+        float newLightness = 1.0 - lightness;
+        float saturation = delta == 0 ? 0 : delta / (1 - abs(2 * lightness - 1)); 
+        saturation *= saturationFactor;
+
+        // Convert back to RGB
+        float adjustment = newLightness - lightness;
+
+        RGBA result = new RGBA(
+            min(1.0, max(0.0, color.red + adjustment)),
+            min(1.0, max(0.0, color.green + adjustment)),
+            min(1.0, max(0.0, color.blue + adjustment)),
+            color.alpha
+        );
+
+        return result;
+    }
+
+    public void setVTEColors(bool force = false) {
         // Determine colorset needed and only set if different
         VTEColorSet desired = (isTerminalWidgetFocused() || dimPercent == 0)? VTEColorSet.normal: VTEColorSet.dim;
         if (desired == currentColorSet && !force) return;
+        bool invert = invertWhenDark && tilix.isDarkMode;
 
 //        tracef("vteBGUsed: %f, %f, %f, %f", vteBG.red, vteBG.green, vteBG.blue, vteBG.alpha);
         if (isTerminalWidgetFocused() || dimPercent == 0) {
 //            tracef("vteFG: %f, %f, %f", vteFG.red, vteFG.green, vteFG.blue);
-            vte.setColors(vteFG, vteBG, vtePalette);
+            if (invert) {
+                RGBA vteFGI = invertColor(vteFG);
+                RGBA vteBGI = invertColor(vteBG);
+                vte.setColors(vteFGI, vteBGI, vtePalette);
+            } else {
+                vte.setColors(vteFG, vteBG, vtePalette);
+            }
             setBoldColor(vteBold);
             currentColorSet = VTEColorSet.normal;
         } else {
@@ -2292,6 +2327,10 @@ private:
                 error("Parsing Bold color failed");
             }
             updateDimColors();
+            setVTEColors(true);
+            break;
+        case SETTINGS_PROFILE_INVERT_WHEN_DARK:
+            invertWhenDark = gsProfile.getBoolean(SETTINGS_PROFILE_INVERT_WHEN_DARK);
             setVTEColors(true);
             break;
         case SETTINGS_PROFILE_USE_HIGHLIGHT_COLOR_KEY, SETTINGS_PROFILE_HIGHLIGHT_FG_COLOR_KEY, SETTINGS_PROFILE_HIGHLIGHT_BG_COLOR_KEY:
@@ -2524,7 +2563,8 @@ private:
             SETTINGS_PROFILE_CELL_HEIGHT_SCALE_KEY,
             SETTINGS_PROFILE_CELL_WIDTH_SCALE_KEY,
             SETTINGS_PROFILE_MARGIN_KEY,
-            SETTINGS_PROFILE_BADGE_USE_SYSTEM_FONT_KEY
+            SETTINGS_PROFILE_BADGE_USE_SYSTEM_FONT_KEY,
+            SETTINGS_PROFILE_INVERT_WHEN_DARK,
         ];
 
         foreach (key; keys) {
