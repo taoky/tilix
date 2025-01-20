@@ -217,6 +217,14 @@ public:
 		clipboard.setText(text, textlen);
 	}
 
+	public string getTextRange(glong startRow, glong startCol, glong endRow, glong endCol, VteSelectionFunc isSelected, void* userData)
+	{
+		auto retStr = vte_terminal_get_text_range(vteTerminal, startRow, startCol, endRow, endCol, isSelected, userData, null);
+
+		scope(exit) Str.freeString(retStr);
+		return Str.toString(retStr);
+	}
+
 static if (COMPILE_VTE_BACKGROUND_COLOR) {
     public void getColorBackgroundForDraw(RGBA background) {
 		vte_terminal_get_color_background_for_draw(vteTerminal, background is null? null: background.getRGBAStruct());

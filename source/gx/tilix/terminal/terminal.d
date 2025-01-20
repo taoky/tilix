@@ -985,8 +985,7 @@ private:
                         glong cursorCol, cursorRow;
                         vte.getCursorPosition(cursorCol, cursorRow);
                         if (cursorRow > 0) cursorRow--;
-                        ArrayG attr = new ArrayG(false, false, 16);
-                        string text = vte.getTextRange(cursorRow, 0, cursorRow, 128, null, null, attr);
+                        string text = vte.getTextRange(cursorRow, 0, cursorRow, 128, null, null);
                         notifyProcessNotification(_("Terminal Activity"), text, uuid);
                     }
                 }
@@ -1637,10 +1636,9 @@ private:
                 startCol = 0;
             }
             //tracef("Testing trigger: (%d, %d) to (%d, %d)", startRow, startCol, cursorRow, cursorCol);
-            ArrayG attr;
             //tracef("Checking from %d,%d to %d,%d",startRow, startCol, cursorRow, cursorCol);
             if (startRow <0) startRow = 0;
-            string text = vte.getTextRange(startRow, startCol, cursorRow, cursorCol, null, null, attr);
+            string text = vte.getTextRange(startRow, startCol, cursorRow, cursorCol, null, null);
             // Update position early in case we get re-entrant event
             triggerLastRowChecked = cursorRow;
             triggerLastColChecked = cursorCol;
