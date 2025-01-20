@@ -1592,6 +1592,10 @@ private:
         bh.bind(SETTINGS_ALWAYS_USE_REGEX_IN_SEARCH, cbAlwaysUseRegex, "active", GSettingsBindFlags.DEFAULT);
         add(cbAlwaysUseRegex);
 
+        CheckButton cbMonitorFrontendProcess = new CheckButton(_("Monitor the frontend process"));
+        bh.bind(SETTINGS_PROCESS_MONITOR, cbMonitorFrontendProcess, "active", GSettingsBindFlags.DEFAULT);
+        add(cbMonitorFrontendProcess);
+
         //Show Notifications, only show option if notifications are supported
         if (checkVTEFeature(TerminalFeature.EVENT_NOTIFICATION)) {
             CheckButton cbNotify = new CheckButton(_("Send desktop notification on process complete"));
