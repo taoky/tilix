@@ -2,6 +2,7 @@ module gx.tilix.terminal.activeprocess;
 
 import core.sys.posix.unistd;
 import core.thread;
+import core.stdc.errno;
 
 import std.algorithm;
 import std.array;
@@ -44,8 +45,12 @@ class Process {
             string[] other  = data[rpar + 2..data.length].split;
             return name ~ other;
         } catch (FileException fe) {
-            warning(fe);
+            if (fe.errno == ESRCH) {
+                // Ignore "No such process" error.
+            } else {
+                warning(fe);
             }
+        }
         return "? 0 0 0 0 0 0".split;
     }
 
