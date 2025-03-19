@@ -191,11 +191,11 @@ public:
 		vte_terminal_set_disable_bg_draw(vteTerminal, isDisabled);
     }
 
-	public void setEnableFallbackScrolling(bool enable) {
+	public override void setEnableFallbackScrolling(bool enable) {
 		vte_terminal_set_enable_fallback_scrolling(vteTerminal, enable);
 	}
 
-	public void setScrollUnitIsPixels(bool enable) {
+	public override void setScrollUnitIsPixels(bool enable) {
 		vte_terminal_set_scroll_unit_is_pixels(vteTerminal, enable);
 	}
 

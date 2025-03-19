@@ -1301,6 +1301,10 @@ private:
         saMaximize.setEnabled(!_isSingleTerminal);
     }
 
+    string getStateFromProcessName(string processName) {
+        return "";
+    }
+
     /**
      * Replace the various token variables in a string
      */
@@ -1320,10 +1324,13 @@ private:
         text = text.replace(VARIABLE_TERMINAL_STATUS_INPUT_SYNC, to!string(isSynchronizedInput()));
 
         if (text.indexOf(VARIABLE_TERMINAL_PROCESS) >= 0) {
-            if (tilix.processMonitor)
+            if (tilix.processMonitor) {
                 text = text.replace(VARIABLE_TERMINAL_PROCESS, activeProcessName);
-            else
+                text = text.replace(VARIABLE_TERMINAL_PROCESS_STATE, getStateFromProcessName(activeProcessName));
+            } else {
                 text = text.replace(VARIABLE_TERMINAL_PROCESS, _("Not Enabled"));
+                text = text.replace(VARIABLE_TERMINAL_PROCESS_STATE, "");
+            }
         }
         string path;
         if (terminalInitialized) {
@@ -4327,9 +4334,9 @@ public:
         super([_("Relaunch")], [ResponseType.OK]);
         lblPrompt = new Label("");
         getContentArea().packStart(lblPrompt, true, true, 0);
-        lblPrompt.setHalign(Align.START);
-        setHalign(Align.FILL);
-        setValign(Align.START);
+        lblPrompt.setHalign(GtkAlign.START);
+        setHalign(GtkAlign.FILL);
+        setValign(GtkAlign.START);
         trace("Infobar created");
         addOnMap(delegate(Widget) {
             setDefaultResponse(ResponseType.OK);
@@ -4375,7 +4382,7 @@ public:
 
         Label lblCmd = new Label(SimpleXML.markupEscapeText(cmd, cmd.length));
         lblCmd.setUseMarkup(true);
-        lblCmd.setHalign(Align.START);
+        lblCmd.setHalign(GtkAlign.START);
         lblCmd.setEllipsize(PangoEllipsizeMode.END);
 
         if (count(cmd,"\n") > 6) {
